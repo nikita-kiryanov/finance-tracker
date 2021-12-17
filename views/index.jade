@@ -1,0 +1,102 @@
+extends layout
+
+block content
+  div(class="container-fluid")
+    p(class="text-uppercase text-center fs-2") Balance: #{currentBalance}
+    div(class="row")
+      canvas(id="myChart", width="2000", height="250")
+    div(class="row")
+      div(class='col-auto')
+        h3(onclick='toggleDisplayed("#expense-recurring")') Recurring
+        table(class="table table-sm w-auto")
+          thead
+            tr
+              th name
+              th amount
+          tbody
+            tr(class="table-info")
+              td TOTAL
+              td= expenseRecurringSum.sum
+          tbody(id='expense-recurring')
+            each row in expenseRecurring
+              tr
+                td= row.name
+                td= row.amount
+      div(class='col')
+        h3 Immediate
+        table(class="table table-sm")
+          thead
+            tr
+              th
+              th name
+              th amount
+              th date
+              th category
+          tbody
+            tr(class="table-info")
+              td
+              td TOTAL
+              td= expenseImmediateSum.sum
+              td
+              td
+          tbody
+            tr
+              td
+                input(type="button", name="add", value="Add", onclick="addImmediateExpense()")
+              td
+                input(type="text", name="name", id="immediate-name", required)
+              td
+                input(type="number", name="amount", id="immediate-amount", style="width: 80px",
+                      required)
+              td
+                input(type="date", name="date", id="immediate-date", required)
+              td
+                select(name="category", id="immediate-category")
+                  each category in categories
+                    option(value=category.id)= category.name
+          tbody(id="expense-immediate")
+            each row in expenseImmediate
+              tr
+                td
+                td= row.name
+                td= row.amount
+                td= row.date
+                td= row.category
+      div(class='col')
+        h3 Delayed
+        table(class="table table-sm")
+          thead
+            tr
+              th
+              th name
+              th amount
+              th category
+          tbody
+            tr(class="table-info")
+              td
+              td TOTAL
+              td= expenseDelayedSum.sum
+              td
+          tbody
+            tr
+              td
+                input(type="button", name="add", value="Add", onclick="addDelayedExpense()")
+              td
+                input(type="text", name="name", id="delayed-name", required)
+              td
+                input(type="number", name="amount", id="delayed-amount", style="width: 80px", required)
+              td
+                select(name="category", id="delayed-category")
+                  each category in categories
+                    option(value=category.id)= category.name
+          tbody(id="expense-delayed")
+            each row in expenseDelayed
+              tr
+                td
+                td= row.name
+                td= row.sum
+                td= row.category
+  script.
+    displayGraph(
+      parseGraphEvents('!{JSON.stringify(graphPastPoints)}', '!{JSON.stringify(graphFuturePoints)}')
+    );
