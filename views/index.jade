@@ -1,0 +1,105 @@
+extends header
+
+block content
+  div(class="container-fluid")
+    p(class="text-uppercase text-center fs-2" style="margin-bottom: 0") Balance: #{currentBalance}
+    p(class="text-center fs-2" id="dailyBudget")
+    div(class="row")
+      canvas(id="myChart", width="2000", height="250")
+    div(class="row")
+      div(class='col-auto')
+        h3(onclick='toggleDisplayed("#expense-recurring")') Recurring #{expenseRecurringSum.sum}
+        table(class="table table-sm w-auto")
+          thead
+            tr
+              th name
+              th amount
+          tbody(id='expense-recurring')
+            each row in expenseRecurring
+              tr
+                td= row.name
+                td= row.amount
+      div(class='col')
+        h3 Immediate #{expenseImmediateSum.sum} (#{expenseImmediateSumPrevMonth.sum})
+        table(class="table table-sm")
+          thead
+            tr
+              th
+              th name
+              th amount
+              th date
+              th category
+          tbody
+            tr
+              form(id="new-immediate-expense")
+                td
+                  input(type="button", name="add", value="Add",
+                        onclick="submitNewExpense(addImmediateExpense, 'new-immediate-expense')")
+                td
+                  input(type="text", name="name", id="immediate-name", required)
+                td
+                  input(type="number", name="amount", id="immediate-amount", step=".01",
+                        style="width: 80px", required)
+                td
+                  input(type="date", name="date", id="immediate-date", required)
+                td
+                  select(name="category", id="immediate-category")
+                    each category in categories
+                      option(value=category.id)= category.name
+          tbody(id="expense-immediate")
+            each row in expenseImmediate
+              tr
+                td
+                td= row.name
+                td= row.amount
+                td= row.date
+                td= row.category
+      div(class='col')
+        h3 Delayed #{expenseDelayedSum.sum} (#{expenseDelayedSumPrevMonth.sum})
+        table(class="table table-sm")
+          thead
+            tr
+              th
+              th name
+              th amount
+              th category
+              th payments
+          tbody
+            tr
+              form(id="new-delayed-expense")
+                td
+                  input(type="button", name="add", value="Add",
+                        onclick="submitNewExpense(addDelayedExpense, 'new-delayed-expense')")
+                td
+                  input(type="text", name="name", id="delayed-name", required)
+                td
+                  input(type="number", name="amount", id="delayed-amount", style="width: 80px",
+                        step=".01", required)
+                td
+                  select(name="category", id="delayed-category")
+                    each category in categories
+                      option(value=category.id)= category.name
+                td
+                  input(type="number", name="payments", id="delayed-payments", style="width: 80px",
+                        min="1", step="1", value=1)
+          tbody(id="expense-delayed")
+            each row in expenseDelayed
+              tr
+                td
+                td= row.name
+                td= row.sum
+                td= row.category
+                td= row.payments_text
+  script.
+    displayGraph(
+      parseGraphEvents('!{JSON.stringify(graphPastPoints)}', '!{JSON.stringify(graphFuturePoints)}')
+    );
+    let dt = new Date();
+    let month = dt.getMonth();
+    let year = dt.getFullYear();
+    let daysInMonth = new Date(year, month, 0).getDate();
+    let daysLeftInMonth = daysInMonth - dt.getDay() + 1;
+    let dailyBudget = (
+      '!{income}' - '!{expenseRecurringSum.sum}' - '!{expenseImmediateSum.sum}' - '!{expenseDelayedSum.sum}'
+    ) / daysLeftInMonth;
+    document.getElementById('dailyBudget').innerText = 'Daily budget: ' + parseFloat(dailyBudget).toFixed(2);
