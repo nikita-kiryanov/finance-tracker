@@ -4,10 +4,13 @@ function toggleDisplayed(id) {
 }
 
 addDelayedExpense = async () => {
+    let delayedName = document.getElementById('delayed-name');
+    let delayedAmount = document.getElementById('delayed-amount');
+    let delayedCategory = document.getElementById('delayed-category');
     let payload = {
-        name: document.getElementById('delayed-name').value,
-        amount: document.getElementById('delayed-amount').value,
-        category_id: document.getElementById('delayed-category').value
+        name: delayedName.value,
+        amount: delayedAmount.value,
+        category_id: delayedCategory.value
     };
     const location = window.location.hostname;
     const settings = {
@@ -24,17 +27,24 @@ addDelayedExpense = async () => {
         row.insertCell(2).innerHTML = payload.amount;
         categories = document.getElementById('delayed-category');
         row.insertCell(3).innerHTML = categories[payload.category_id - 1].text;
+        delayedName.value = null;
+        delayedAmount.value = null;
+        delayedCategory.value = 1;
     } catch (e) {
 
     }
 }
 
 addImmediateExpense = async () => {
+    let immediateName = document.getElementById('immediate-name');
+    let immediateAmount = document.getElementById('immediate-amount');
+    let immediateDate = document.getElementById('immediate-date');
+    let immediateCategory = document.getElementById('immediate-category');
     let payload = {
-        name: document.getElementById('immediate-name').value,
-        amount: document.getElementById('immediate-amount').value,
-        date: document.getElementById('immediate-date').value,
-        category_id: document.getElementById('immediate-category').value
+        name: immediateName.value,
+        amount: immediateAmount.value,
+        date: immediateDate.value,
+        category_id: immediateCategory.value
     };
     const location = window.location.hostname;
     const settings = {
@@ -52,6 +62,10 @@ addImmediateExpense = async () => {
         row.insertCell(3).innerHTML = payload.date;
         categories = document.getElementById('immediate-category');
         row.insertCell(4).innerHTML = categories[payload.category_id - 1].text;
+        immediateName.value = null;
+        immediateAmount.value = null;
+        immediateDate.value = null;
+        immediateCategory.value = 1;
     } catch(e) {
 
     }
