@@ -48,8 +48,8 @@ block content
                 td
                   input(type="text", name="name", id="immediate-name", required)
                 td
-                  input(type="number", name="amount", id="immediate-amount", style="width: 80px",
-                        required)
+                  input(type="number", name="amount", id="immediate-amount", step=".01",
+                        style="width: 80px", required)
                 td
                   input(type="date", name="date", id="immediate-date", required)
                 td
@@ -90,7 +90,8 @@ block content
                 td
                   input(type="text", name="name", id="delayed-name", required)
                 td
-                  input(type="number", name="amount", id="delayed-amount", style="width: 80px", required)
+                  input(type="number", name="amount", id="delayed-amount", style="width: 80px",
+                        step=".01", required)
                 td
                   select(name="category", id="delayed-category")
                     each category in categories
