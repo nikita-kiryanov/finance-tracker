@@ -206,7 +206,7 @@ function addExpenseImmediate(req, res) {
 
 function addExpenseDelayed(req, res) {
   try {
-    db.none(pgp.helpers.insert(req.body, null, 'expense_delayed'));
+    db.none(pgp.helpers.insert(req.body.payloads, req.body.columns, 'expense_delayed'));
     res.end('{"success" : "Updated Successfully", "status" : 200}');
   } catch (e) {
     console.log(e);

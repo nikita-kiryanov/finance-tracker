@@ -16,29 +16,42 @@ addDelayedExpense = async () => {
     let delayedName = document.getElementById('delayed-name');
     let delayedAmount = document.getElementById('delayed-amount');
     let delayedCategory = document.getElementById('delayed-category');
-    let payload = {
-        name: delayedName.value,
-        amount: delayedAmount.value,
-        category_id: delayedCategory.value
-    };
+    let delayedPayments = document.getElementById('delayed-payments');
+    let payments = parseInt(delayedPayments.value);
+    let payloads = [];
+    let columns = [];
+    const now = new Date();
+    columns = ['name', 'amount', 'category_id', 'date', 'payments_text'];
+    for (var i = 0; i < payments; i++) {
+        paymentDate = new Date(now.getFullYear(), now.getMonth() + 1 + i, 2);
+        payloads.push({
+            name: delayedName.value,
+            amount: parseFloat(delayedAmount.value) / payments,
+            category_id: delayedCategory.value,
+            date: paymentDate.toLocaleDateString('sv-SE').split('T')[0],
+            payments_text: '' + (i + 1) + '/' + payments
+        });
+    }
     const location = window.location.hostname;
     const settings = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({payloads, columns}),
     };
     try {
         res = await fetch(`http://${location}:3000/expense/delayed/`, settings);
         const table = document.getElementById('expense-delayed');
         const row = table.insertRow(0);
         row.insertCell(0);
-        row.insertCell(1).innerHTML = payload.name;
-        row.insertCell(2).innerHTML = payload.amount;
+        row.insertCell(1).innerHTML = payloads[0].name;
+        row.insertCell(2).innerHTML = payloads[0].amount;
         categories = document.getElementById('delayed-category');
-        row.insertCell(3).innerHTML = categories[payload.category_id - 1].text;
+        row.insertCell(3).innerHTML = categories[payloads[0].category_id - 1].text;
+        row.insertCell(4).innerHTML = '' + 1 + '/' + payments;
         delayedName.value = null;
         delayedAmount.value = null;
         delayedCategory.value = 1;
+        delayedPayments.value = 1;
     } catch (e) {
 
     }

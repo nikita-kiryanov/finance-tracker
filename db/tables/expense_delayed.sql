@@ -9,6 +9,7 @@ CREATE TABLE public.expense_delayed
     name text COLLATE pg_catalog."default",
     date date DEFAULT ((date(date_trunc('month'::text, (CURRENT_DATE)::timestamp with time zone)) + '1 mon'::interval) + '1 day'::interval),
     category_id integer,
+    payments_text text COLLATE pg_catalog."default" DEFAULT '1/1'::text,
     CONSTRAINT expense_delayed_category_id_fkey FOREIGN KEY (category_id)
         REFERENCES public.categories (category_id) MATCH SIMPLE
         ON UPDATE NO ACTION
