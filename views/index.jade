@@ -41,19 +41,21 @@ block content
               td
           tbody
             tr
-              td
-                input(type="button", name="add", value="Add", onclick="addImmediateExpense()")
-              td
-                input(type="text", name="name", id="immediate-name", required)
-              td
-                input(type="number", name="amount", id="immediate-amount", style="width: 80px",
-                      required)
-              td
-                input(type="date", name="date", id="immediate-date", required)
-              td
-                select(name="category", id="immediate-category")
-                  each category in categories
-                    option(value=category.id)= category.name
+              form(id="new-immediate-expense")
+                td
+                  input(type="button", name="add", value="Add",
+                        onclick="submitNewExpense(addImmediateExpense, 'new-immediate-expense')")
+                td
+                  input(type="text", name="name", id="immediate-name", required)
+                td
+                  input(type="number", name="amount", id="immediate-amount", style="width: 80px",
+                        required)
+                td
+                  input(type="date", name="date", id="immediate-date", required)
+                td
+                  select(name="category", id="immediate-category")
+                    each category in categories
+                      option(value=category.id)= category.name
           tbody(id="expense-immediate")
             each row in expenseImmediate
               tr
@@ -79,16 +81,18 @@ block content
               td
           tbody
             tr
-              td
-                input(type="button", name="add", value="Add", onclick="addDelayedExpense()")
-              td
-                input(type="text", name="name", id="delayed-name", required)
-              td
-                input(type="number", name="amount", id="delayed-amount", style="width: 80px", required)
-              td
-                select(name="category", id="delayed-category")
-                  each category in categories
-                    option(value=category.id)= category.name
+              form(id="new-delayed-expense")
+                td
+                  input(type="button", name="add", value="Add",
+                        onclick="submitNewExpense(addDelayedExpense, 'new-delayed-expense')")
+                td
+                  input(type="text", name="name", id="delayed-name", required)
+                td
+                  input(type="number", name="amount", id="delayed-amount", style="width: 80px", required)
+                td
+                  select(name="category", id="delayed-category")
+                    each category in categories
+                      option(value=category.id)= category.name
           tbody(id="expense-delayed")
             each row in expenseDelayed
               tr

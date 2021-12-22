@@ -3,6 +3,15 @@ function toggleDisplayed(id) {
     elem.style.display = elem.style.display === 'none' ? '' : 'none';
 }
 
+submitNewExpense = (func, formId) => {
+    const form = document.getElementById(formId);
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return false;
+    }
+    func();
+}
+
 addDelayedExpense = async () => {
     let delayedName = document.getElementById('delayed-name');
     let delayedAmount = document.getElementById('delayed-amount');
