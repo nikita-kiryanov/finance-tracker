@@ -116,11 +116,13 @@ function getExpenseImmediateTotal(req, res, next) {
 }
 
 function getExpenseDelayed(req, res, next) {
-  db.any(`SELECT expense.name, SUM(amount), categories.name AS category
+  db.any(`SELECT expense.name, SUM(amount), categories.name AS category,
+                 CASE WHEN payments_text = '1/1' THEN '' ELSE payments_text END AS payments_text
           FROM expense_delayed expense
           INNER JOIN categories USING(category_id)
           WHERE date BETWEEN current_date AND current_date + interval '1 month'
-          GROUP BY expense.name, category`)
+          GROUP BY expense.name, category,
+                   CASE WHEN payments_text = '1/1' THEN '' ELSE payments_text END`)
     .then(function (data) {
       req.expenseDelayed = data;
       return next();

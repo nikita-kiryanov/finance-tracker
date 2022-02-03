@@ -106,7 +106,7 @@ block content
                 td= row.name
                 td= row.sum
                 td= row.category
-                td
+                td= row.payments_text
   script.
     displayGraph(
       parseGraphEvents('!{JSON.stringify(graphPastPoints)}', '!{JSON.stringify(graphFuturePoints)}')
