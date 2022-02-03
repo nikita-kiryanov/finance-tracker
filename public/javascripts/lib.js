@@ -122,6 +122,32 @@ parseGraphEvents = (past, future) => {
     return data;
 }
 
+var originalLineDraw = Chart.controllers.line.prototype.draw;
+Object.assign(Chart.controllers.line.prototype, {
+    draw: function () {
+        originalLineDraw.apply(this, arguments);
+
+        var chart = this.chart;
+        var ctx = chart.ctx;
+
+        const now = new Date();
+        const label = now.toLocaleDateString('sv-SE').split('T')[0];
+
+        var index = chart.config.data.labels.findIndex(e => e == label);
+        var xaxis = chart.scales['x'];
+        var yaxis = chart.scales['y'];
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(xaxis.getPixelForValue(index), yaxis.top);
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 3;
+        ctx.lineTo(xaxis.getPixelForValue(index), yaxis.bottom);
+        ctx.stroke();
+        ctx.restore();
+    }
+});
+
 displayGraph = (data) => {
     var daylist = getDaysArray(new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
                                new Date(new Date().getFullYear(), new Date().getMonth() + 3, 1));
