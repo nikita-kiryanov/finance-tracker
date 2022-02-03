@@ -3,6 +3,14 @@ function toggleDisplayed(id) {
     elem.style.display = elem.style.display === 'none' ? '' : 'none';
 }
 
+insertHTMLTableRow = (tableId, cellValues) => {
+    const table = document.getElementById(tableId);
+    const row = table.insertRow(0);
+    for (var i = 0; i < cellValues.length; i++) {
+        row.insertCell(i).innerHTML = cellValues[i];
+    }
+}
+
 submitNewExpense = (func, formId) => {
     const form = document.getElementById(formId);
     if (!form.checkValidity()) {
@@ -40,14 +48,11 @@ addDelayedExpense = async () => {
     };
     try {
         res = await fetch(`http://${location}:3000/expense/delayed/`, settings);
-        const table = document.getElementById('expense-delayed');
-        const row = table.insertRow(0);
-        row.insertCell(0);
-        row.insertCell(1).innerHTML = payloads[0].name;
-        row.insertCell(2).innerHTML = payloads[0].amount;
-        categories = document.getElementById('delayed-category');
-        row.insertCell(3).innerHTML = categories[payloads[0].category_id - 1].text;
-        row.insertCell(4).innerHTML = '' + 1 + '/' + payments;
+        const categories = document.getElementById('delayed-category');
+        const selectedCategory = categories[payloads[0].category_id - 1];
+        insertHTMLTableRow('expense-delayed', [
+            '', payloads[0].name, payloads[0].amount, selectedCategory.text, '' + 1 + '/' + payments
+        ]);
         delayedName.value = null;
         delayedAmount.value = null;
         delayedCategory.value = 1;
@@ -76,14 +81,11 @@ addImmediateExpense = async () => {
     };
     try {
         res = await fetch(`http://${location}:3000/expense/immediate/`, settings);
-        const table = document.getElementById('expense-immediate');
-        const row = table.insertRow(0);
-        row.insertCell(0);
-        row.insertCell(1).innerHTML = payload.name;
-        row.insertCell(2).innerHTML = payload.amount;
-        row.insertCell(3).innerHTML = payload.date;
-        categories = document.getElementById('immediate-category');
-        row.insertCell(4).innerHTML = categories[payload.category_id - 1].text;
+        const categories = document.getElementById('immediate-category');
+        const selectedCategory = categories[payload.category_id - 1];
+        insertHTMLTableRow('expense-immediate', [
+            '', payload.name, payload.amount, payload.date, selectedCategory.text
+        ]);
         immediateName.value = null;
         immediateAmount.value = null;
         immediateDate.value = null;
