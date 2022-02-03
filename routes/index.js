@@ -194,9 +194,14 @@ function renderExpensePage(req, res) {
 function addExpenseImmediate(req, res) {
   try {
     db.none(pgp.helpers.insert(req.body, null, 'expense_immediate'));
+    db.none(`UPDATE balance_log
+             SET amount = amount - $(value)
+             WHERE date > $(date)`,
+            { value: req.body.amount, date: req.body.date });
     db.none(`INSERT INTO balance_log(amount, date)
              SELECT amount - $(value), $(date)
              FROM balance_log
+             WHERE date <= $(date)
              ORDER BY balance_log_id DESC
              LIMIT 1`,
             {value: req.body.amount, date: req.body.date});
