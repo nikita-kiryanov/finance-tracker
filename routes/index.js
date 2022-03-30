@@ -9,13 +9,13 @@ function getGraphPointsPast(req, res, next) {
   db.any(`WITH past_events AS (
             SELECT amount, date
             FROM balance_log
-            WHERE date BETWEEN date_trunc('month', current_date):: date - interval '1 months' AND current_date - interval '1 day'
+            WHERE date BETWEEN date_trunc('month', current_date):: date - interval '1 months' AND current_date
             ORDER BY date ASC
           )
           SELECT date_trunc('day', dd)::date::text AS date, amount
           FROM generate_series(
             date_trunc('month', current_date)::date - interval '1 months',
-            current_date::date - interval '1 day',
+            current_date::date,
             '1 day'::interval
           ) dd
           LEFT JOIN past_events ON date = dd`)
@@ -120,7 +120,7 @@ function getExpenseDelayed(req, res, next) {
                  CASE WHEN payments_text = '1/1' THEN '' ELSE payments_text END AS payments_text
           FROM expense_delayed expense
           INNER JOIN categories USING(category_id)
-          WHERE date BETWEEN current_date AND current_date + interval '1 month'
+          WHERE date BETWEEN current_date AND current_date + interval '1 month' - interval '1 day'
           GROUP BY expense.name, category,
                    CASE WHEN payments_text = '1/1' THEN '' ELSE payments_text END`)
     .then(function (data) {
@@ -135,7 +135,7 @@ function getExpenseDelayed(req, res, next) {
 function getExpenseDelayedTotal(req, res, next) {
   db.any(`SELECT sum(amount)
           FROM expense_delayed
-          WHERE date BETWEEN current_date AND current_date + interval '1 month'`)
+          WHERE date BETWEEN current_date AND current_date + interval '1 month' - interval '1 day'`)
     .then(function (data) {
       req.expenseDelayedSum = data;
       return next();
