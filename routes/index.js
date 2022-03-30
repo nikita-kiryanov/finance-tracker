@@ -7,10 +7,10 @@ var db = pgp(`postgres://${dbCfg.user}:${dbCfg.password}@${dbCfg.host}:${dbCfg.p
 
 function getGraphPointsPast(req, res, next) {
   db.any(`WITH past_events AS (
-            SELECT amount, date
+            SELECT DISTINCT ON (date) amount, date
             FROM balance_log
             WHERE date BETWEEN date_trunc('month', current_date):: date - interval '1 months' AND current_date
-            ORDER BY date ASC
+            ORDER BY date ASC, balance_log_id DESC
           )
           SELECT date_trunc('day', dd)::date::text AS date, amount
           FROM generate_series(
