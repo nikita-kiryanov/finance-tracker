@@ -113,7 +113,9 @@ parseGraphEvents = (past, future) => {
             balance = Number(amount);
         data.push(balance);
     }
-    for (var i = 0; i < future.length; i++) {
+    if (future[0]['amount'] !== null)
+        data[past.length - 1] -= future[0]['amount'];
+    for (var i = 1; i < future.length; i++) {
         let amount = future[i]['amount'];
         if (amount !== null)
             balance -= Number(amount);
